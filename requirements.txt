@@ -4,3 +4,9 @@ langchain-community
 langchain-text-splitters
 ollama
 torch
+faiss-cpu
+langchain-huggingface
+fastapi
+uvicorn
+langchain-groq
+python-dotenv
