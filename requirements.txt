@@ -10,3 +10,5 @@ fastapi
 uvicorn
 langchain-groq
 python-dotenv
+pypdf
+python-multipart

@@ -3,66 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NotebookLM AI</title>
-    <!-- Google Fonts: Inter -->
+    <title>NotebookLM // Studio & Short Notes</title>
+    <!-- Google Fonts: Space Grotesk & Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar / Settings area -->
-        <aside class="sidebar">
-            <div class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-book-open"></i></div>
-                <h1>NotebookLM</h1>
+    <div class="app-shell">
+        <!-- TOP NAVIGATION BAR -->
+        <header class="app-header">
+            <div class="header-brand">
+                <div class="brand-square"><i class="fa-solid fa-square-terminal"></i></div>
+                <div class="brand-titles">
+                    <h1>NOTEBOOK<span class="highlight">LM</span></h1>
+                    <span class="version-tag">PROT-v2.0 // RAG STUDIO</span>
+                </div>
             </div>
             
-            <div class="sidebar-section">
-                <h3>About</h3>
-                <p>An AI assistant powered by Groq and LangChain. Ask questions about your loaded documents.</p>
+            <div class="header-status">
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span class="status-text">GROQ STREAM // ONLINE</span>
+                </div>
+                <div class="status-pill alt">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span id="docCountBadge">0 DOCS LOADED</span>
+                </div>
             </div>
-            
-            <div class="sidebar-actions">
-                <button id="clearBtn" class="btn btn-secondary">
-                    <i class="fa-solid fa-trash-can"></i> Clear History
+
+            <div class="header-actions">
+                <button id="toggleNotesPanelBtn" class="btn btn-sharp btn-outline active" title="Toggle Notes Panel">
+                    <i class="fa-solid fa-note-sticky"></i>
+                    <span>SHORT NOTES</span>
+                    <span id="notesCountBadge" class="count-badge">0</span>
                 </button>
             </div>
-        </aside>
+        </header>
 
-        <!-- Main Chat Area -->
-        <main class="chat-container">
-            <header class="chat-header">
-                <h2>Chat Session</h2>
-                <div class="status-indicator">
-                    <span class="dot"></span> Online (Groq)
+        <!-- MAIN 3-COLUMN WORKSPACE LAYER -->
+        <div class="workspace-body">
+            
+            <!-- LEFT PANEL: DOCUMENTS & SYSTEM -->
+            <aside class="panel left-panel">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-folder-open"></i> SOURCES</h2>
+                    <button id="uploadBtn" class="btn btn-sharp btn-primary btn-sm">
+                        <i class="fa-solid fa-plus"></i> UPLOAD
+                    </button>
+                    <input type="file" id="fileUpload" accept=".txt,.pdf" style="display: none;">
                 </div>
-            </header>
+                
+                <div class="upload-status-bar" id="uploadStatus"></div>
 
-            <div class="chat-history" id="chatHistory">
-                <!-- Welcome Message -->
-                <div class="message ai-message">
-                    <div class="avatar ai-avatar"><i class="fa-solid fa-robot"></i></div>
-                    <div class="message-content">
-                        <p>Hello! I am NotebookLM. Ask me anything about your documents.</p>
+                <div class="panel-section">
+                    <div class="section-label">ACTIVE DOCUMENTS</div>
+                    <ul id="documentList" class="document-list">
+                        <!-- Loaded dynamically -->
+                    </ul>
+                </div>
+
+                <div class="panel-section info-box">
+                    <div class="section-label">SYSTEM CONTEXT</div>
+                    <p>Retrieval-Augmented Generation using dense contextual embeddings (<code>all-MiniLM-L6-v2</code>) and FAISS vector index.</p>
+                </div>
+
+                <div class="panel-footer">
+                    <button id="clearBtn" class="btn btn-sharp btn-danger btn-block">
+                        <i class="fa-solid fa-trash-arrow-up"></i> CLEAR CHAT HISTORY
+                    </button>
+                </div>
+            </aside>
+
+            <!-- CENTER PANEL: CHAT CANVAS STREAM -->
+            <main class="panel center-panel">
+                <div class="chat-header-bar">
+                    <div class="chat-title">
+                        <i class="fa-solid fa-comments"></i> CHAT SESSION
+                    </div>
+                    <div class="chat-actions">
+                        <span class="mono-label">MODEL: GROQ LLaMA-3</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="input-area">
-                <form id="chatForm">
-                    <div class="input-wrapper">
-                        <textarea id="userInput" placeholder="Ask a question..." rows="1" required></textarea>
-                        <button type="submit" id="sendBtn" class="btn btn-primary">
-                            <i class="fa-solid fa-paper-plane"></i>
+                <div class="chat-history" id="chatHistory">
+                    <!-- Welcome Block -->
+                    <div class="message-block ai-block">
+                        <div class="block-header">
+                            <div class="author-tag"><i class="fa-solid fa-microchip"></i> NOTEBOOKLM</div>
+                            <div class="time-tag">SYSTEM</div>
+                        </div>
+                        <div class="block-body">
+                            <p>Welcome to NotebookLM Studio. Ask questions, analyze text, and save key insights directly into your <strong>Short Notes</strong> workspace.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-bar">
+                    <form id="chatForm">
+                        <div class="input-container">
+                            <textarea id="userInput" placeholder="Ask a question or request a summary..." rows="1" required></textarea>
+                            <button type="submit" id="sendBtn" class="btn btn-sharp btn-accent">
+                                <span>SEND</span> <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+
+            <!-- RIGHT PANEL: SHORT NOTES CANVAS -->
+            <aside class="panel right-panel" id="notesPanel">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-box-archive"></i> SHORT NOTES</h2>
+                    <div class="panel-header-buttons">
+                        <button id="newNoteBtn" class="btn btn-sharp btn-primary btn-sm" title="Create Manual Note">
+                            <i class="fa-solid fa-pen-to-square"></i> NEW NOTE
+                        </button>
+                        <button id="exportNotesBtn" class="btn btn-sharp btn-secondary btn-sm" title="Export Notes">
+                            <i class="fa-solid fa-download"></i> EXPORT
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <!-- Notes Filter Bar -->
+                <div class="notes-filter-bar">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="noteSearchInput" placeholder="Filter note cards...">
+                    </div>
+                    <div class="tag-chips" id="tagChips">
+                        <button class="tag-chip active" data-tag="ALL">ALL</button>
+                        <button class="tag-chip" data-tag="INSIGHT">INSIGHT</button>
+                        <button class="tag-chip" data-tag="SUMMARY">SUMMARY</button>
+                        <button class="tag-chip" data-tag="KEY POINT">KEY POINT</button>
+                        <button class="tag-chip" data-tag="IDEA">IDEA</button>
+                    </div>
+                </div>
+
+                <!-- Short Notes Cards Container -->
+                <div class="notes-grid" id="notesGrid">
+                    <!-- Note Cards will be rendered dynamically here -->
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- NOTE CREATE / EDIT MODAL -->
+    <div class="modal-overlay" id="noteModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalTitle"><i class="fa-solid fa-note-sticky"></i> CREATE SHORT NOTE CARD</h3>
+                <button id="closeModalBtn" class="close-btn">&times;</button>
             </div>
-        </main>
+            <div class="modal-body">
+                <input type="hidden" id="modalNoteId">
+                <div class="form-group">
+                    <label for="noteTitleInput">NOTE TITLE</label>
+                    <input type="text" id="noteTitleInput" placeholder="e.g., Deep Learning Core Concept" required>
+                </div>
+                <div class="form-group">
+                    <label for="noteTagSelect">CATEGORY / TAG</label>
+                    <select id="noteTagSelect">
+                        <option value="INSIGHT">INSIGHT</option>
+                        <option value="SUMMARY">SUMMARY</option>
+                        <option value="KEY POINT">KEY POINT</option>
+                        <option value="IDEA">IDEA</option>
+                        <option value="QUOTE">QUOTE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="noteContentInput">CONTENT / SHORT NOTE</label>
+                    <textarea id="noteContentInput" rows="6" placeholder="Enter key facts, formulas, or excerpts..." required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelNoteBtn" class="btn btn-sharp btn-secondary">CANCEL</button>
+                <button id="saveNoteBtn" class="btn btn-sharp btn-accent">SAVE CARD</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
